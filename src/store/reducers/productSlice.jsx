@@ -2,17 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState ={
     data:[
-        {id:1,
-        name:"product 1",
-        price:100
-    },
-        {id:2,
-        name:"product 2",
-        price:200
-    },
+        
     ]
 }
-
 const productSlice=createSlice({
     name: "products",
     initialState,
