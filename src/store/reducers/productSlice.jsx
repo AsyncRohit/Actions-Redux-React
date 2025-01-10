@@ -16,6 +16,16 @@ const productSlice=createSlice({
         remove:(state,action)=>{
             state.data.splice(action.payload,1);
             console.log(action);
+        },
+        edit:(state,action)=>{
+            console.log(action.payload);
+            const {id,updatedProduct} = action.payload;
+const index=state.data.findIndex((product)=>product.id===id)
+if(index !== -1){
+    state.data[index]={...state.data[index],...updatedProduct}
+}
+
+
         }
     }
     
@@ -23,4 +33,4 @@ const productSlice=createSlice({
 
 export default productSlice.reducer
 
-export const {add,remove} =productSlice.actions;
+export const {add,remove,edit} =productSlice.actions;

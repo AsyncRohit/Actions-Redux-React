@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { add, remove } from "./store/reducers/productSlice";
+import { add, edit, remove } from "./store/reducers/productSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -8,20 +8,28 @@ const App = () => {
   const [productname, setProductName] = useState("");
   const [productprice, setProductPrice] = useState("");
   const [productid, setProductId] = useState("");
-  const [allproduct, setAllProduct] = useState([]);
+
+  const [isediting, setIsEditing] = useState(false)
+  const [editid, setEditId] = useState(null)
 
   const { data: products } = useSelector((state) => state.product);
   // console.log(products);
 
   const SubmitHandler = (e) => {
+
+    if(isediting){
+      dispatch(edit({id:editid,updatedProduct:{name:productname,id:productid,price:productprice}}))
+    setIsEditing(false)
+    setEditId(null)
+    }
+    else{
+      dispatch(add({name:productname,id:productid,price:productprice}));
+    }
     e.preventDefault();
     setProductId("");
     setProductName("");
     setProductPrice("");
-    const arr = [...allproduct, { productname, productid, productprice }];
-    setAllProduct(arr);
     // console.log(arr);
-    dispatch(add({name:productname,id:productid,price:productprice}));
   };
 
   const DeleteProduct = (index) => {
@@ -29,13 +37,24 @@ const App = () => {
     console.log(index);
   };
 
+  const EditHandler=(index)=>{
+    const ProductToedit=products[index]
+    setProductId(ProductToedit.id)
+    setProductName(ProductToedit.name)
+    setProductPrice(ProductToedit.price)
+    setIsEditing(true)
+    setEditId(ProductToedit.id)
+
+    console.log(ProductToedit);
+  }
+
   return (
-    <div className=" px-4 py-4 h-screen w-full ">
+    <div className="h-screen w-full ">
       <form
         onSubmit={(e) => {
           SubmitHandler(e);
         }}
-        className="px-4 py-4 bg-gray-300 flex flex-col gap-10 mb-10 "
+        className="px-4 py-4 bg-gray-300 flex flex-col gap-10  "
       >
         <input
           onChange={(e) => {
@@ -70,16 +89,17 @@ const App = () => {
         </button>
       </form>
 
-      <div className="grid grid-row-3 grid-cols-3 gap-4 w-full">
+      <div className="px-4 grid grid-row-3 grid-cols-3 gap-4 w-full bg-gray-300">
         {products.map((product, index) => {
           return (
             <div
               key={index}
-              className="px-4 text-xl flex flex-col gap-4 items-center text-white py-4 bg-gray-300 "
+              className="px-4 text-xl flex flex-col gap-4 items-center text-white py-4 bg-gray-700 "
             >
               <h1>Name: {product.name}</h1>
               <h2>Product_id : {product.id}</h2>
               <h3>Price : ${product.price}</h3>
+              <div className="flex gap-10">
               <button
                 onClick={() => {
                   DeleteProduct(index);
@@ -88,6 +108,15 @@ const App = () => {
               >
                 Delete Product
               </button>
+              <button
+                onClick={() => {
+                  EditHandler(index);
+                }}
+                className="px-4 py-4 bg-yellow-500 text-white text-xl font-semibold rounded-md"
+              >
+                Edit Product
+              </button>
+              </div>
             </div>
           );
         })}
