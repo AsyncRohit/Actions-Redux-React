@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { add, edit, remove } from "./store/reducers/productSlice";
+import { add, edit, asyncremove } from "./store/actions/productAction";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ const App = () => {
   };
 
   const DeleteProduct = (index) => {
-    dispatch(remove(index));
+    dispatch(asyncremove(index));
     console.log(index);
   };
 
